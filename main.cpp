@@ -4,6 +4,8 @@
 #include "pico/binary_info.h"
 #include "pico/cyw43_arch.h"
 
+#include "build/squarewave.pio.h"
+
 
 const uint LED_DELAY_MS = 50;
 #ifdef PICO_DEFAULT_LED_PIN
@@ -17,6 +19,8 @@ const uint IR_DETECTOR_ENABLE_PIN = 13;
 const uint TV_IR_ENABLE = 5;
 const uint TV_IR_DETECT = 6;
 const uint TV_IR_STATUS = 7;
+
+const uint CARRIER_PIN = 9;
 
 
 // Initialize the GPIO for the LED
@@ -50,9 +54,17 @@ void pico_set_led(bool led_on) {
 
 int main()
 {
+	PIO pio;
+    uint sm;
+    uint offset;
+
+	setup_default_uart();
 	stdio_init_all();
 	pico_led_init();
 	bool irDetected = false;
+
+	bool success = pio_claim_free_sm_and_add_program_for_gpio_range(&squarewave_program, &pio, &sm, &offset, CARRIER_PIN, 1, true);
+    hard_assert(success);
 
 	while(!irDetected)
 	{

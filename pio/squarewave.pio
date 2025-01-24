@@ -1,0 +1,7 @@
+.pio_version 0
+.program squarewave
+    set pindirs, 1  ; Set pin to output
+loop:
+    set pins, 1 [1]
+    set pins, 0
+    jmp loop
