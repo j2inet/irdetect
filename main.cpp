@@ -4,7 +4,7 @@
 #include "pico/binary_info.h"
 #include "pico/cyw43_arch.h"
 
-#include "build/squarewave.pio.h"
+#include "squarewave.pio.h"
 
 
 const uint LED_DELAY_MS = 50;
@@ -65,6 +65,7 @@ int main()
 
 	bool success = pio_claim_free_sm_and_add_program_for_gpio_range(&squarewave_program, &pio, &sm, &offset, CARRIER_PIN, 1, true);
     hard_assert(success);
+	//squarewave_program_init(pio, sm, offset, CARRIER_PIN);
 
 	while(!irDetected)
 	{
