@@ -23,7 +23,7 @@ const uint TV_IR_STATUS = 7;
 
 const uint CARRIER_PIN = 9;
 
-static const float pio_freq = 38000*2;
+static const float pio_freq = 38000*4;
 
 
 // Initialize the GPIO for the LED

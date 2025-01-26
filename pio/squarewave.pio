@@ -2,12 +2,9 @@
 .program squarewave
     set pindirs, 1  ; Set pin to output
 loop:
-    set pins, 1 [31]
-    set pins, 0 [31]
-    set pins, 0 [31]
-    set pins, 0 [31]
-    set pins, 0 [31]
-    jmp loop
+    set pins, 1  [1]
+    set pins, 0 
+    .wrap
 
 % c-sdk {
     static inline void squarewave_program_init(PIO pio, uint sm, uint offset, uint pin, float div)
