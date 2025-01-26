@@ -2,18 +2,23 @@
 .program squarewave
     set pindirs, 1  ; Set pin to output
 loop:
-    set pins, 1 [1]
-    set pins, 0
+    set pins, 1 [31]
+    set pins, 0 [31]
+    set pins, 0 [31]
+    set pins, 0 [31]
+    set pins, 0 [31]
     jmp loop
 
 % c-sdk {
-    static inline void squarewave_program_init(PIO pio, uint sm, uint offset, uint pin)
+    static inline void squarewave_program_init(PIO pio, uint sm, uint offset, uint pin, float div)
     {
         pio_sm_config c = squarewave_program_get_default_config(offset);
         sm_config_set_out_pins(&c, pin, 1);
         pio_gpio_init(pio, pin);
         pio_sm_set_consecutive_pindirs(pio, sm, pin, 1, true);
 
+        sm_config_set_clkdiv(&c, div);
+        sm_config_set_set_pins(&c, pin, 1);
         pio_sm_init(pio, sm, offset, &c);
         pio_sm_set_enabled(pio, sm, true);
     }

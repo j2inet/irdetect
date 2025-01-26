@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include "hardware/clocks.h"
 #include "pico/binary_info.h"
 #include "pico/cyw43_arch.h"
-
+#include <iostream>
 #include "squarewave.pio.h"
 
 
@@ -21,6 +22,8 @@ const uint TV_IR_DETECT = 6;
 const uint TV_IR_STATUS = 7;
 
 const uint CARRIER_PIN = 9;
+
+static const float pio_freq = 38000*2;
 
 
 // Initialize the GPIO for the LED
@@ -44,6 +47,9 @@ void pico_led_init(void) {
 
 	gpio_init(TV_IR_STATUS);
 	gpio_set_dir(TV_IR_STATUS, GPIO_OUT);
+
+	//gpio_init(CARRIER_PIN);
+	//gpio_set_dir(CARRIER_PIN, GPIO_OUT);
 }
 
 // Turn the LED on or off
@@ -62,10 +68,18 @@ int main()
 	stdio_init_all();
 	pico_led_init();
 	bool irDetected = false;
+	
+	std::cout  << std::endl << std::endl<< "Initialized" << std::endl;
 
+	float div = (float)clock_get_hz(clk_sys) / pio_freq;
+	std::cout << "To achieve a frequence of " << pio_freq << " Hz, will use a divisor of "<<div<<" for the clock " << std::endl;
 	bool success = pio_claim_free_sm_and_add_program_for_gpio_range(&squarewave_program, &pio, &sm, &offset, CARRIER_PIN, 1, true);
+	std::cout << "Success:" << success << std::endl;
+	//pio->sm[sm].clkdiv = (uint32_t) (2.5f * (1 << 16));
     hard_assert(success);
-	//squarewave_program_init(pio, sm, offset, CARRIER_PIN);
+	squarewave_program_init(pio, sm, offset, CARRIER_PIN, div);
+	
+	std::cout << "Running main loop" << std::endl;
 
 	while(!irDetected)
 	{
@@ -88,5 +102,6 @@ int main()
 		gpio_put(LED_PIN, p);
 		sleep_us(10);
 	}
+	pio_remove_program_and_unclaim_sm(&squarewave_program, pio, sm, offset);
 	return 0;
 }

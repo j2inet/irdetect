@@ -17,8 +17,6 @@ pico_enable_stdio_usb(irdetect 1)
 pico_enable_stdio_uart(irdetect 1)
 pico_add_extra_outputs(irdetect)
 
-#add_library(squarewave_pio squarewave.pio)
-
 
 # target_compile_definitions(irdetect PRIVATE
 # 	CYW43_PIO_CLOCK_DIV_DYNAMIC=1
